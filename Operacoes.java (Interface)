@@ -1,0 +1,7 @@
+Operacoes.java (Interface)
+
+package banco;
+
+public interface Operacoes {
+    void transferir(Conta destino, double valor) throws Exception;
+}
