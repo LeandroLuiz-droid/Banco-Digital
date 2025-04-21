@@ -1,0 +1,30 @@
+Conta.java (Classe Abstrata)
+
+package banco;
+
+public abstract class Conta {
+    protected String titular;
+    protected double saldo;
+
+    public Conta(String titular, double saldo) {
+        this.titular = titular;
+        this.saldo = saldo;
+    }
+
+    public abstract void sacar(double valor) throws Exception;
+
+    public void depositar(double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("Depósito precisa ser maior que zero.");
+        }
+        saldo += valor;
+    }
+
+    public String getTitular() {
+        return titular;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+}
