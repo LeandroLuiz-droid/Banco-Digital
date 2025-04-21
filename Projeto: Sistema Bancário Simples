@@ -1,0 +1,151 @@
+#Projeto: Sistema Bancário Simples#
+
+banco/
+├── Conta.java              // Classe abstrata
+├── ContaCorrente.java      // Subclasse de Conta
+├── ContaPoupanca.java      // Subclasse de Conta
+├── Operacoes.java          // Interface
+├── Main.java               // Classe que simula o programa
+
+
+
+
+
+#Conta.java (Classe Abstrata)#
+
+package banco;
+
+public abstract class Conta {
+    protected String titular;
+    protected double saldo;
+
+    public Conta(String titular, double saldo) {
+        this.titular = titular;
+        this.saldo = saldo;
+    }
+
+    public abstract void sacar(double valor) throws Exception;
+
+    public void depositar(double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("Depósito precisa ser maior que zero.");
+        }
+        saldo += valor;
+    }
+
+    public String getTitular() {
+        return titular;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+}
+
+
+
+
+
+
+ #Operacoes.java (Interface)#
+
+
+package banco;
+
+public interface Operacoes {
+    void transferir(Conta destino, double valor) throws Exception;
+}
+
+
+
+
+#ContaCorrente.java (Classe Concreta)#
+
+
+package banco;
+
+public class ContaCorrente extends Conta implements Operacoes {
+
+    public ContaCorrente(String titular, double saldo) {
+        super(titular, saldo);
+    }
+
+    @Override
+    public void sacar(double valor) throws Exception {
+        if (valor > saldo) {
+            throw new Exception("Saldo insuficiente na conta corrente.");
+        }
+        saldo -= valor;
+    }
+
+    @Override
+    public void transferir(Conta destino, double valor) throws Exception {
+        this.sacar(valor);
+        destino.depositar(valor);
+    }
+}
+
+
+
+
+#ContaPoupanca.java (Classe Concreta)#
+
+
+package banco;
+
+public class ContaPoupanca extends Conta implements Operacoes {
+
+    public ContaPoupanca(String titular, double saldo) {
+        super(titular, saldo);
+    }
+
+    @Override
+    public void sacar(double valor) throws Exception {
+        if (valor > saldo) {
+            throw new Exception("Saldo insuficiente na poupança.");
+        }
+        saldo -= valor;
+    }
+
+    @Override
+    public void transferir(Conta destino, double valor) throws Exception {
+        this.sacar(valor);
+        destino.depositar(valor);
+    }
+}
+
+
+
+
+#Main.java (Simulação e Exceções)#
+
+
+
+package banco;
+
+public class Main {
+    public static void main(String[] args) {
+        ContaCorrente conta1 = new ContaCorrente("João", 1500);
+        ContaPoupanca conta2 = new ContaPoupanca("Maria", 800);
+
+        try {
+            System.out.println("Saldo do João: R$ " + conta1.getSaldo());
+            System.out.println("Saldo da Maria: R$ " + conta2.getSaldo());
+
+            conta1.transferir(conta2, 300);
+            System.out.println("Transferência realizada!");
+
+            System.out.println("Saldo do João: R$ " + conta1.getSaldo());
+            System.out.println("Saldo da Maria: R$ " + conta2.getSaldo());
+
+            conta2.sacar(1500); // vai causar erro!
+
+        } catch (Exception e) {
+            System.out.println("Erro ao realizar operação: " + e.getMessage());
+        }
+
+        System.out.println("Fim das operações.");
+    }
+}
+
+
